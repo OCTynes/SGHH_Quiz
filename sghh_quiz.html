@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Type of Sad Girl Are You?</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #414667;
+            color: #fff5ea;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #quiz-container {
+            text-align: center;
+            max-width: 360px;
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        #image {
+            max-width: 300px;
+            max-height: 300px;
+            margin-bottom: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        button {
+            background-color: #F58F91;
+            color: #fff5ea;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px 0;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            width: 100%;
+            white-space: normal;
+            word-wrap: break-word;
+            border-radius: 8px;
+        }
+        button:hover {
+            background-color: #000080;
+        }
+        #result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        } 
+
+        #description {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <div id="question"></div>
+        <div id="result"></div>
+        <img id="image" style="display: none;">
+        <div id="description"></div>
+        <div id="options"></div>
+    </div>
+
+    <script>
+        // Initialize scores
+        let acScore = 0, hoScore = 0, mnScore = 0, liScore = 0;
+
+        // Initialize the list of questions and prompts
+        const questions = [
+            { text: "What type of sad girl are you?", answers: ["Start Quiz"], scoreType: null },
+            { text: "Welcome to sad girl world! You have just been born.", answers: ["Continue"], scoreType: null },
+            { text: "In school, you quickly learn that not all classes are fun. Luckily you excel in one subject:", 
+              answers: ["Math", "Writing", "Art", "Science"], scoreType: "AC" },
+            { text: "You’ve got a big test tomorrow morning, and spend all night studying.", answers: ["Continue"], scoreType: null },
+            { text: "You get a 46% on your English assignment. You go home and cry yourself to sleep. How many hours do you sleep?", 
+              answers: ["Caffeine is the only way I make it through the day (Under 6 hours)", 
+                        "I have transcended beyond the need for sleep", 
+                        "6-8 hours (I’m normal)", 
+                        "I'm practically a cat"], scoreType: "HO" },
+            { text: "Oh no! You overslept for your next day of classes. Might as well ditch school for the day! Where do you go?", 
+              answers: ["I would never ditch class", "History Museum", "Local Concert", "Rest and recharge at home"], scoreType: "AC" },
+            { text: "The next day you are called into the principal's office...", answers: ["Continue"], scoreType: null },
+            { text: "“You're never going to be successful if you keep missing class,” the principal says.", 
+              answers: ["Argue with the principal"], scoreType: null },
+            { text: "You respond: I don’t even need class to get my dream job! I want to be a...", 
+              answers: ["Moviestar", "Doctor", "Lawyer", "Artist"], scoreType: "AC" },
+            { text: "Back in class your friends ask you what happened, then ask if you want to go to a movie", answers: ["Sure"], scoreType: null },
+            { text: "What movie do you suggest attending?", answers: ["Horror movie", "Rom com", "Drama", "Documentary"], scoreType: "LI" },
+            { text: "You go to the movie and your friends say it sucked.", answers: ["Sorry..."], scoreType: null },
+            { text: "Luckily, they still like hanging out with you. You have the reputation in the group of being:", 
+              answers: ["The mom friend", "The chill one", "The crackhead", "The social butterfly"], scoreType: "HO" },
+            { text: "The years pass by, and it’s finally time to graduate high school.", answers: ["Age"], scoreType: null },
+            { text: "You are called up to give a graduation speech. “I’d like to thank…”", 
+              answers: ["My wonderful partner for supporting me", "Nobody", "My family for supporting me", "My cat"], scoreType: "LI" },
+            { text: "You go to college and are quickly enamored by the endless opportunities that you can take advantage of", 
+              answers: ["Continue"], scoreType: null },
+            { text: "You meet a friend who invites you to a party and decide to go. When do you show up?", 
+              answers: ["I’m always the first one at the function", 
+                        "For the most part, I’m on time", 
+                        "Probably late", 
+                        "I move on my own time"], scoreType: "MN" },
+            { text: "At the party, where are you?", 
+              answers: ["It’s not really my scene, I’m on my phone", 
+                        "The dance floor!", 
+                        "Playing games and drinking", 
+                        "Outside having a conversation"], scoreType: "HO" },
+            { text: "Another student comes up and starts getting to know you. He asks “If you were a type of drink, what would you be?” You tell him that’s a strange question and answer:", 
+              answers: ["Vodka redbull", "Chai", "Wine", "Water", "Espresso"], scoreType: "HO" },
+            { text: "You want to get out of the conversation, how do you end it?", 
+              answers: ["“My friend’s calling, gotta go!”", 
+                        "“I have to go wash my cat”", 
+                        "Walk away without saying anything", 
+                        "Start acting insane so they end the conversation"], scoreType: "AC" },
+            { text: "Time passes in college and you’re looking for a job. Do you have a LinkedIn?", answers: ["Yes", "No"], scoreType: "MN" },
+            { text: "You do not find a job, and the crippling reality of adulthood hits you.", answers: ["Continue"], scoreType: null },
+            { text: "Unemployed life is difficult, and you start wondering if your principal was right… Who do you rant to?", 
+              answers: ["My partner", "My family", "My diary", "Nobody"], scoreType: "LI" },
+            { text: "Those around you tell you to focus on yourself. How do you spend your free time?", 
+              answers: ["Going to the gym", "Scrolling Reels", "Learning to cook", "Hanging out with friends"], scoreType: "MN" },
+            { text: "You eventually land four job offers. Congrats! Which do you accept?", 
+              answers: ["Staff Accountant", "Children’s Party DJ", "Copywriter", "Data Entry Clerk"], scoreType: "AC" },
+            { text: "Yikes", answers: ["Continue"], scoreType: null },
+            { text: "How do you celebrate the beginning of your new career (which you will be locked into for the next 30-40 years)?", 
+              answers: ["Black out drinking", "Netflix Marathon", "Bungee Jumping", "Sleep"], scoreType: "HO" }
+        ];
+
+
+        const images = {
+            0: "quest/sadgirl.png",
+            1: "quest/babby.png",
+            2: "",
+            3: "",
+            4: "",
+            5: "",
+            6: "",
+            7: "",
+            8: "",
+            9: "",
+            10: "quest/sghh_movie.png",
+            11: "",
+            12: "",
+            13: "",
+            14: "",
+            15: "quest/sghh_party.png",
+            16: "",
+            17: "",
+            18: "",
+            19: "",
+            20: "quest/sghh_linkedin.png",
+            21: "",
+            22: "quest/sghh_diary.png",
+            23: "quest/sghh_cook.png",
+            24: "",
+            25: "",
+            26: "",
+        };
+
+        const images2 = {
+            "AHML": "types/sghh_dreamer.png",
+            "AOML": "types/sghh_corporateslave.png",
+            "AHNL": "Future Wine Aunt",
+            "AONL": "types/sghh_romcombinger.png",
+            "AHMI": "types/sghh_girlboss.png",
+            "AOMI": "Future CEO (just not now)",
+            "AHNI": "types/sghh_giftedchildburnout.png",
+            "AONI": "types/sghh_gamer.png",
+            "CHML": "The Romantic",
+            "COML": "Stoner Sad Girl",
+            "CHNL": "Party Animal",
+            "CONL": "types/sghh_starvingartist.png",
+            "CHMI": "Creative Director 💅",
+            "COMI": "types/sghh_catperson.png",
+            "CHNI": "Crackhead",
+            "CONI": "types/sghh_coma.png"
+
+        }
+
+        let currentQuestion = 0;
+        let previousAnswer = null;
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question').textContent = question.text;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            question.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.textContent = answer;
+                button.onclick = () => handleAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+
+            const image = document.getElementById('image');
+            if (images[currentQuestion]) {
+                image.src = images[currentQuestion];
+                image.style.display = 'block';
+            } else {
+                image.style.display = 'none';
+            }
+        }
+
+        function initializeQuiz() {
+            currentQuestion = 0;
+            showQuestion();
+        }
+
+
+        function handleAnswer(answerIndex) {
+            // Score updates based on the current question
+            if (currentQuestion === 2 && [0, 3].includes(answerIndex)) {
+                acScore += 1;
+            } else if (currentQuestion === 4 && [1, 2].includes(answerIndex)) {
+                hoScore += 1;
+            } else if (currentQuestion === 5 && [0, 1].includes(answerIndex)) {
+                acScore += 1;
+            } else if (currentQuestion === 8 && [1, 2].includes(answerIndex)) {
+                acScore += 1;
+            } else if (currentQuestion === 10 && [1, 2].includes(answerIndex)) {
+                liScore += 1;
+            } else if (currentQuestion === 12 && [2, 3].includes(answerIndex)) {
+                hoScore += 1;
+            } else if (currentQuestion === 14 && [0, 2].includes(answerIndex)) {
+                liScore += 1;
+            } else if (currentQuestion === 16 && [0, 1].includes(answerIndex)) {
+                mnScore += 1;
+            } else if (currentQuestion === 17 && [1, 2].includes(answerIndex)) {
+                hoScore += 1;
+            } else if (currentQuestion === 18 && [0, 4].includes(answerIndex)) {
+                hoScore += 1;
+            } else if (currentQuestion === 19 && [0, 2].includes(answerIndex)) {
+                acScore += 1;
+            } else if (currentQuestion === 20 && answerIndex === 0) {
+                mnScore += 1;
+            } else if (currentQuestion === 22 && [0, 1].includes(answerIndex)) {
+                liScore += 1;
+            } else if (currentQuestion === 23 && [0, 2].includes(answerIndex)) {
+                mnScore += 1;
+            } else if (currentQuestion === 24 && [0, 3].includes(answerIndex)) {
+                acScore += 1;
+            } else if (currentQuestion === 26 && [0, 2].includes(answerIndex)) {
+                hoScore += 1;
+            }
+
+            if (currentQuestion === 5 && answerIndex === 0) {
+                showNerdMessage();
+            } else if (currentQuestion === 8) {
+                // Store the answer for question 9 (index 8)
+                previousAnswer = answerIndex;
+                currentQuestion++;
+                showConditionalQuestion();
+            } else {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }
+        }
+
+        function showNerdMessage() {
+            document.getElementById('question').textContent = "Nerd. You still overslept";
+            document.getElementById('options').innerHTML = '';
+            const continueButton = document.createElement('button');
+            continueButton.textContent = "Continue";
+            continueButton.onclick = () => {
+                currentQuestion++;
+                showQuestion();
+            };
+            document.getElementById('options').appendChild(continueButton);
+        }
+
+        function showConditionalQuestion() {
+            let message = "";
+            if (previousAnswer === 0 || previousAnswer === 3) {
+                message = "The principal says you're disobedient AND going to be broke, then sends you back to class";
+            } else {
+                message = "The principal says you're disobedient AND stupid, then sends you back to class";
+            }
+            
+            document.getElementById('question').textContent = message;
+            document.getElementById('options').innerHTML = '';
+            const continueButton = document.createElement('button');
+            continueButton.textContent = "Return to class";
+            continueButton.onclick = () => {
+                currentQuestion++;
+                showQuestion();
+            };
+            document.getElementById('options').appendChild(continueButton);
+        }
+
+        function showResult() {
+            const firstLetter = acScore > 2 ? "A" : "C";
+            const secondLetter = hoScore > 2 ? "H" : "O";
+            const thirdLetter = mnScore > 1 ? "M" : "N";
+            const fourthLetter = liScore > 1 ? "L" : "I";
+
+            const result = firstLetter + secondLetter + thirdLetter + fourthLetter;
+
+                const personality_types = {
+                    "AHML": "Dreamer",
+                    "AOML": "Corporate Slave",
+                    "AHNL": "Future Wine Aunt",
+                    "AONL": "Rom Com Binger (You’re also delusional)",
+                    "AHMI": "Girl Boss",
+                    "AOMI": "Future CEO (just not now)",
+                    "AHNI": "Gifted child burnout",
+                    "AONI": "The Gamer",
+                    "CHML": "The Romantic",
+                    "COML": "Stoner Sad Girl",
+                    "CHNL": "Party Animal",
+                    "CONL": "Starving Artist",
+                    "CHMI": "Creative Director 💅",
+                    "COMI": "Cat Person",
+                    "CHNI": "Crackhead",
+                    "CONI": "Literally In A Coma"
+                };
+
+            const descriptions = {
+                "AHML": "A high paying job, a loving partner, a house and two kids – you want the perfect life. And with that motivation, you’ll get there! <i>(psst. You’re delusional)</i>",
+                "AOML": "Wake up. Brush your teeth. Commute to work. Clock in. Cry in the bathroom. Clock out. Eat dinner. Watch Netflix. Pass out. Repeat.",
+                "AHNL": "You’re witty, full of life, and riding the vibes. You’re a staple at the function due to your interesting aura. But wait…are you <i>really</i> sad?",
+                "AONL": "Maybe you were gifted in school back in the day, but now the only thing you’re analyzing is the new season of Love Island on Netflix…",
+                "AHMI": "<i>It's about drive, it's about power, we stay hungry, we devour, Put in the work, put in the hours and take what's ours…</i>",
+                "AOMI": "You’re a girl boss… in theory….but you’re just soooo sleepy…",
+                "AHNI": "You were probably a straight A student juggling 10 extracurricular activities at once. Now the only things you’re juggling are existential anxiety, a boring job, and the nagging thought of how you’re gonna get out of tomorrow’s plans…",
+                "AONI": "You’re a bit of a lone wolf. You prefer staying in and may spend this time with the people who <i>really</i> understand you: your Sims family.",
+                "CHML": "You exude creativity and are destined to put it out into the world. (something witty)",
+                "COML": "Stoner Sad Girl",
+                "CHNL": "You like to have fun! But after the party, all that’s left is time to replay every mistake from the night before like a movie",
+                "CONL": "With her canvas blank and her fridge empty, she painted her sorrows in shades of despair, proving that even a starving artist can serve up a feast of emotions—just not for dinner.",
+                "CHMI": "You craft brilliance from your tears, proving that even the saddest ideas can be a masterpiece—if only your budget for therapy matched your talent.",
+                "COMI": "Creative, energized, and independent, but with no motivation to utilize this power for good, you are an unbridled force of chaos. You distract yourself from your sorrows by doing the most unhinged possible things and we love that for you.",
+                "CHNI": "Crackhead",
+                "CONI": "Literally In A Coma"
+            };
+
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('options').innerHTML = '';
+
+            const image = document.getElementById('image');
+            if (images2[result]) {
+                image.src = images2[result];
+                image.style.display = 'block';
+            } else {
+                image.style.display = 'none';
+            }
+
+            const resultText = `Your four letters are: ${result}\nYou are the ${personality_types[result] || 'Undefined'}`;
+            document.getElementById('result').textContent = resultText;
+
+            const descriptionText = descriptions[result] || 'NA';
+            document.getElementById('description').innerHTML = descriptionText;
+
+            const restartButton = document.createElement('button');
+            restartButton.textContent = 'Play Again?';
+            restartButton.onclick = restartGame;
+            document.getElementById('options').appendChild(restartButton);
+
+            const exitButton = document.createElement('button');
+            exitButton.textContent = "Nah I'm good";
+            exitButton.onclick = exitQuiz;
+            document.getElementById('options').appendChild(exitButton);
+
+            const igButton = document.createElement('button');
+            igButton.textContent = "@sadgirls.happyhours";
+            igButton.onclick = function() {
+                window.location.href = "https://www.instagram.com/sadgirls.happyhours/";
+            };
+            document.getElementById('options').appendChild(igButton);
+        }
+
+        function restartGame() {
+            acScore = 0;
+            hoScore = 0;
+            mnScore = 0;
+            liScore = 0;
+            currentQuestion = 0;
+
+            document.getElementById('result').textContent = '';
+            document.getElementById('description').textContent = '';
+            document.getElementById('question').style.display = 'block';
+
+            initializeQuiz();
+        }
+        function exitQuiz() {
+            document.getElementById('result').textContent = 'Thanks for playing!';
+            document.getElementById('description').textContent = '';
+            document.getElementById('options').innerHTML = '';
+
+            const igButton = document.createElement('button');
+            igButton.textContent = "@sadgirls.happyhours";
+            igButton.onclick = function() {
+                window.location.href = "https://www.instagram.com/sadgirls.happyhours/";
+            };
+            document.getElementById('options').appendChild(igButton);
+
+            const shareButton = document.createElement('button');
+            shareButton.textContent = 'Share the game';
+            shareButton.onclick = () => {
+                const shareMessage = 'YOLO LOL';
+                navigator.clipboard.writeText(shareMessage).then(() => {
+                    alert('Link copied to clipboard!');
+                }).catch(err => {
+                    alert('Failed to copy link. Please try again.');
+                });
+            };
+            document.getElementById('options').appendChild(shareButton)
+        }
+
+        // Start the quiz
+        initializeQuiz();
+    </script>
+</body>
+</html>
