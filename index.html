@@ -451,7 +451,7 @@
             const shareButton = document.createElement('button');
             shareButton.textContent = 'Share the game';
             shareButton.onclick = () => {
-                const shareMessage = 'YOLO LOL';
+                const shareMessage = 'https://octynes.github.io/SGHH_Quiz/';
                 navigator.clipboard.writeText(shareMessage).then(() => {
                     alert('Link copied to clipboard!');
                 }).catch(err => {
