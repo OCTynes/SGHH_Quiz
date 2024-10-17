@@ -107,7 +107,7 @@
                         "I'm practically a cat"], scoreType: "HO" },
             { text: "Oh no! You overslept for your next day of classes. Might as well ditch school for the day! Where do you go?", 
               answers: ["I would never ditch class", "History Museum", "Local Concert", "Rest and recharge at home"], scoreType: "AC" },
-            { text: "The next day you are called into the principal's office...", answers: ["Continue"], scoreType: null },
+            { text: "The next day you are called into the principal's office...", answers: ["Uh oh..."], scoreType: null },
             { text: "“You're never going to be successful if you keep missing class,” the principal says.", 
               answers: ["Argue with the principal"], scoreType: null },
             { text: "You respond: I don’t even need class to get my dream job! I want to be a...", 
@@ -156,31 +156,31 @@
         const images = {
             0: "quest/sadgirl.png",
             1: "quest/babby.png",
-            2: "",
-            3: "",
-            4: "",
-            5: "",
+            2: "quest/sghh_q2.png",
+            3: "quest/sghh_q3.png",
+            4: "quest/sghh_q4.png",
+            5: "quest/sghh_q5.png",
             6: "",
-            7: "",
-            8: "",
+            7: "quest/sghh_principal.png",
+            8: "quest/sghh_q8.png",
             9: "",
             10: "quest/sghh_movie.png",
             11: "",
-            12: "",
+            12: "quest/sghh_q12.png",
             13: "",
-            14: "",
-            15: "quest/sghh_party.png",
-            16: "",
-            17: "",
-            18: "sghh_q18.png",
-            19: "",
+            14: "quest/sghh_q14.png",
+            15: "",
+            16: "quest/sghh_q16.png",
+            17: "quest/sghh_party.png",
+            18: "quest/sghh_q18.png",
+            19: "quest/sghh_q19.png",
             20: "quest/sghh_linkedin.png",
             21: "",
             22: "quest/sghh_diary.png",
             23: "quest/sghh_cook.png",
-            24: "",
+            24: "quest/sghh_24.png",
             25: "",
-            26: "",
+            26: "quest/sghh_26.png",
         };
 
         const images2 = {
@@ -317,6 +317,10 @@
                 showQuestion();
             };
             document.getElementById('options').appendChild(continueButton);
+
+            const image = document.getElementById('image');
+            image.src = "quest/sghh_principal.png";  
+            image.style.display = 'block';  
         }
 
         function showResult() {
@@ -417,6 +421,10 @@
             document.getElementById('result').textContent = 'Thanks for playing!';
             document.getElementById('description').textContent = '';
             document.getElementById('options').innerHTML = '';
+
+            const image = document.getElementById('image');
+            image.src = "";             // Reset the image src to clear it
+            image.style.display = 'none';
 
             const igButton = document.createElement('button');
             igButton.textContent = "@sadgirls.happyhours";
