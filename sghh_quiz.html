@@ -178,9 +178,9 @@
             21: "",
             22: "quest/sghh_diary.png",
             23: "quest/sghh_cook.png",
-            24: "quest/sghh_24.png",
+            24: "quest/sghh_q24.png",
             25: "",
-            26: "quest/sghh_26.png",
+            26: "quest/sghh_q26.png",
         };
 
         const images2 = {
@@ -206,10 +206,28 @@
         let currentQuestion = 0;
         let previousAnswer = null;
 
+        function preloadImagesFromObjects(...imageObjects) {
+            imageObjects.forEach(imageObject => {
+                Object.values(imageObject).forEach(src => {
+                    if (src) {  // Make sure the src is not empty
+                        const img = new Image();
+                        img.src = src;
+                    }
+                });
+            });
+        }
+
         function showQuestion() {
             const question = questions[currentQuestion];
             document.getElementById('question').textContent = question.text;
-            
+            const image = document.getElementById('image');
+            if (images[currentQuestion]) {
+                image.src = images[currentQuestion];
+                image.style.display = 'block';
+            } else {
+                image.style.display = 'none';
+            }
+
             const optionsContainer = document.getElementById('options');
             optionsContainer.innerHTML = '';
             
@@ -219,17 +237,11 @@
                 button.onclick = () => handleAnswer(index);
                 optionsContainer.appendChild(button);
             });
-
-            const image = document.getElementById('image');
-            if (images[currentQuestion]) {
-                image.src = images[currentQuestion];
-                image.style.display = 'block';
-            } else {
-                image.style.display = 'none';
-            }
         }
 
         function initializeQuiz() {
+            preloadImagesFromObjects(images, images2);
+            
             currentQuestion = 0;
             showQuestion();
         }
@@ -291,6 +303,9 @@
         function showNerdMessage() {
             document.getElementById('question').textContent = "Nerd. You still overslept";
             document.getElementById('options').innerHTML = '';
+            const image = document.getElementById('image');
+            image.src = "";             
+            image.style.display = 'none';
             const continueButton = document.createElement('button');
             continueButton.textContent = "Continue";
             continueButton.onclick = () => {
