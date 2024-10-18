@@ -406,10 +406,17 @@
             restartButton.onclick = restartGame;
             document.getElementById('options').appendChild(restartButton);
 
-            const exitButton = document.createElement('button');
-            exitButton.textContent = "Nah I'm good";
-            exitButton.onclick = exitQuiz;
-            document.getElementById('options').appendChild(exitButton);
+            const shareButton = document.createElement('button');
+            shareButton.textContent = 'Share the game';
+            shareButton.onclick = () => {
+                const shareMessage = 'https://octynes.github.io/SGHH_Quiz/';
+                navigator.clipboard.writeText(shareMessage).then(() => {
+                    alert('Link copied to clipboard!');
+                }).catch(err => {
+                    alert('Failed to copy link. Please try again.');
+                });
+            };
+            document.getElementById('options').appendChild(shareButton);
 
             const igButton = document.createElement('button');
             igButton.textContent = "@sadgirls.happyhours";
@@ -431,34 +438,6 @@
             document.getElementById('question').style.display = 'block';
 
             initializeQuiz();
-        }
-        function exitQuiz() {
-            document.getElementById('result').textContent = 'Thanks for playing!';
-            document.getElementById('description').textContent = '';
-            document.getElementById('options').innerHTML = '';
-
-            const image = document.getElementById('image');
-            image.src = "";             // Reset the image src to clear it
-            image.style.display = 'none';
-
-            const igButton = document.createElement('button');
-            igButton.textContent = "@sadgirls.happyhours";
-            igButton.onclick = function() {
-                window.location.href = "https://www.instagram.com/sadgirls.happyhours/";
-            };
-            document.getElementById('options').appendChild(igButton);
-
-            const shareButton = document.createElement('button');
-            shareButton.textContent = 'Share the game';
-            shareButton.onclick = () => {
-                const shareMessage = 'https://octynes.github.io/SGHH_Quiz/';
-                navigator.clipboard.writeText(shareMessage).then(() => {
-                    alert('Link copied to clipboard!');
-                }).catch(err => {
-                    alert('Failed to copy link. Please try again.');
-                });
-            };
-            document.getElementById('options').appendChild(shareButton)
         }
 
         // Start the quiz
